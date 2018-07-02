@@ -1,0 +1,4 @@
+USERNAME = "username"
+PASSWORD = "hunter2"
+ERA_4_ALPHA = 4365595
+CURRENT_SOV = 123456

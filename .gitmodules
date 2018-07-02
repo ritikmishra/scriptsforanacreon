@@ -1,0 +1,3 @@
+[submodule "anacreonlib"]
+	path = anacreonlib
+	url = https://github.com/ritikmishra/anacreonlib

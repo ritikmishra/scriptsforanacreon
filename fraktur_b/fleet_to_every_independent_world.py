@@ -1,3 +1,6 @@
+"""
+Sends a fleet to every independent world around a world
+"""
 import json
 import sys
 from copy import copy

@@ -1,6 +1,7 @@
 """
 Sends 1 fleet to every planet in range
 "Naive" because it is not omniscient
+Assumes you have run fleet_to_every_independent_world
 """
 import json
 import sys

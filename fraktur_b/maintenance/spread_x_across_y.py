@@ -26,7 +26,7 @@ def send_a_fleet(source_id, dest_id, resources):
     api.get_objects()
     fleet_obj = api.get_obj_by_id(fleet_id)
     print(fleet_obj)
-    api.disband_fleet(dest_id, fleet_id)
+    api.disband_fleet(fleet_obj["anchorObjID"], fleet_obj["id"])
 
 
 def find_thing(unid):

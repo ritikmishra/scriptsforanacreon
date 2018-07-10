@@ -87,7 +87,7 @@ if __name__ == '__main__':
 
     for world_id, world in objects.items():
         if world[u'class'] == "world":
-            if int(world[u'sovereignID']) == 1:
+            if int(world[u'sovereignID']) == 28957:
                 # dist = anacreon.dist(world[u'pos'], center[u'pos'])
                 distances = {cap[u'name']: api.dist(world[u'pos'], cap[u'pos']) for cap in important_worlds}
                 min_dist = min(distances.values())

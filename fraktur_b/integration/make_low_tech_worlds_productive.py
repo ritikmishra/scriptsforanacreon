@@ -33,3 +33,4 @@ if __name__ == '__main__':
             if should_designate_to_cgaf(world_obj):
                 print("Designated planet", world_obj["name"], "(ID", world_id, ") to CGAF")
                 api.designate_world(world_id, CGAF_DESIG)
+

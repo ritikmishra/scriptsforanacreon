@@ -5,6 +5,16 @@ from anacreonlib import Anacreon
 import json
 import creds
 
+
+def find_thing(unid):
+    # find ID of warphant
+    for type_id, type_obj in api.scenario_info.items():
+        if type_obj["unid"] == unid:
+            return type_id
+    else:
+        raise Exception("Thing not found ???")
+
+
 if __name__ == '__main__':
     api = Anacreon(creds.USERNAME, creds.PASSWORD)
     # set era to era 4
@@ -22,11 +32,40 @@ if __name__ == '__main__':
     space_unit_types = ("fixedUnit", "orbitalUnit", "maneuveringUnit")
     space_id_to_name = {"fixedUnit": {}, "orbitalUnit": {}, "maneuveringUnit": {}}
 
-    aetherium_deposit_levels = {13: "1 abundant", 14: "2 major", 19: "3 minor", 17: "4 trace"}
-    chronimium_deposit_levels = {50: "1 abundant", 51: "2 major", 57: "3 minor", 55: "4 trace"}
-    ctholon_deposit_levels = {59: "1 abundant", 60: "2 major", 65: "3 minor", 63: "4 trace"}
-    hexacarbide_deposit_levels = {126: "1 abundant", 127: "2 major", 133: "3 minor", 131: "4 trace"}
-    trillum_deposit_levels = {244: "1 abundant", 245: "2 major", 251: "3 minor", 250: "4 trace"}
+    aetherium_deposit_levels = {
+        find_thing("core.aetheriumAbundant"): "1 abundant",
+        find_thing("core.aetheriumCommon"): "2 major",
+        find_thing("core.aetheriumUncommon"): "3 minor",
+        find_thing("core.aetheriumRare"): "4 trace"
+    }
+
+    chronimium_deposit_levels = {
+        find_thing("core.chronimiumAbundant"): "1 abundant",
+        find_thing("core.chronimiumCommon"): "2 major",
+        find_thing("core.chronimiumUncommon"): "3 minor",
+        find_thing("core.chronimiumRare"): "4 trace"
+    }
+
+    ctholon_deposit_levels = {
+        find_thing("core.chtholonAbundant"): "1 abundant",
+        find_thing("core.chtholonCommon"): "2 major",
+        find_thing("core.chtholonUncommon"): "3 minor",
+        find_thing("core.chtholonRare"): "4 trace"
+    }
+
+    hexacarbide_deposit_levels = {
+        find_thing("core.hexacarbideAbundant"): "1 abundant",
+        find_thing("core.hexacarbideCommon"): "2 major",
+        find_thing("core.hexacarbideUncommon"): "3 minor",
+        find_thing("core.hexacarbideRare"): "4 trace"
+    }
+
+    trillum_deposit_levels = {
+        find_thing("core.trillumAbundant"): "1 abundant",
+        find_thing("core.trillumCommon"): "2 major",
+        find_thing("core.trillumUncommon"): "3 minor",
+        find_thing("core.trillumRare"): "4 trace"
+    }
 
     deposit_levels = {"aetherium deposits": aetherium_deposit_levels, "chronimium deposits": chronimium_deposit_levels,
                       "ctholon deposits": ctholon_deposit_levels, "hexacarbide deposits": hexacarbide_deposit_levels,
@@ -80,8 +119,12 @@ if __name__ == '__main__':
     important_worlds = []
     for world_id, world in api.objects_dict.items():
         if world[u'class'] == "world":
-            if int(world[u'designation']) in (45, 46, 47, 48, 210, 211, 212, 213):
-                important_worlds.append(world)
+            if world["sovereignID"] == api.sovID:
+                try:
+                    if api.scenario_info[int(world[u'designation'])]["role"] in ("imperialCapital", "sectorCapital"):
+                        important_worlds.append(world)
+                except KeyError:
+                    pass
 
     # center = anacreon.getObjByID(objects, 55)
 

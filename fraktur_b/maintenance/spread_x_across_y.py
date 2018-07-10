@@ -16,17 +16,21 @@ api.sovID = creds.CURRENT_SOV
 api.get_game_info()
 api.get_objects()
 
+api_call_semaphore = multiprocessing.BoundedSemaphore(6)
+
 
 def send_a_fleet(source_id, dest_id, resources):
-    api.deploy_fleet(resources, source_id)
-    fleet_id = api.most_recent_fleet()
-    api.set_fleet_destination(fleet_id, dest_id)
-    print("Sending a fleet from yard ID", source_id, "to academy ID", dest_id, "")
-    time.sleep(api.get_fleet_eta(api.get_obj_by_id(fleet_id)) + 30)
-    api.get_objects()
-    fleet_obj = api.get_obj_by_id(fleet_id)
-    print(fleet_obj)
-    api.disband_fleet(fleet_obj["anchorObjID"], fleet_obj["id"])
+    api_call_semaphore.acquire()
+    try:
+        api.deploy_fleet(resources, source_id)
+        fleet_id = api.most_recent_fleet()
+        api.set_fleet_destination(fleet_id, dest_id)
+    except Exception as e:
+        raise e
+    else:
+        print("Sending a fleet from source ID", source_id, "to dest ID", dest_id, ".")
+    finally:
+        api_call_semaphore.release()
 
 
 def find_thing(unid):
@@ -74,16 +78,33 @@ def is_world_in_nebula(world):
     return False
 
 
+def is_world_not_in_nebula(world):
+    if world["class"] == "world":
+        if world["sovereignID"] == api.sovID:
+            if not (in_bright_nebula_id in world["traits"] or in_dark_nebula_id in world["traits"]):
+                return True
+    return False
+
+def is_world_starship_yard(world):
+    if world["class"] == "world":
+        if world["sovereignID"] == api.sovID:
+            if world["designation"] == starship_yard_desig_id:
+                for i, resource_id in enumerate(world["resources"][::2]):
+                    if resource_id == minotaur_id:
+                        return True
+    return False
+
 warphant_id = find_thing("core.jumptransportWarphant")
 jumpship_yard_desig_id = find_thing("core.jumpshipYardsDesignation")
 ramship_yard_desig_id = find_thing("core.ramshipYardsDesignation")
+starship_yard_desig_id = find_thing("core.starshipYardsDesignation")
 
 cerberus_id = find_thing("core.gunshipCerberus")
+minotaur_id = find_thing("core.gunshipMinotaur")
 
 infantry_academy_desig_id = find_thing("core.infantryAcademyDesignation")
 in_bright_nebula_id = find_thing("core.inBrightNebula")
 in_dark_nebula_id = find_thing("core.inDarkNebula")
-
 
 
 def spread_resources(is_world_producer, is_world_consumer, thing_id):
@@ -110,6 +131,9 @@ def spread_resources(is_world_producer, is_world_consumer, thing_id):
 
     things_per_planet = int((total_things_available / len(where_do_they_need_to_go)) * 0.94)  # just in case
 
+    print("Distributing", things_per_planet, "things per planet")
+    print("There are", len(where_do_they_need_to_go), "planets")
+
     for consumer_id in where_do_they_need_to_go:
         thing_required = things_per_planet
 
@@ -126,6 +150,15 @@ def spread_resources(is_world_producer, is_world_consumer, thing_id):
                 where_are_things[producer_id] -= quantity
 
 
+
+
 if __name__ == '__main__':
+    print("Spreading warphants!")
     spread_resources(is_world_jumpship_yard, is_world_infantry_academy, warphant_id)
+    #
+    # print("Spreading Cerberus's")
     # spread_resources(is_world_ramship_yard, is_world_in_nebula, cerberus_id)
+
+
+    # print("Spreading Minotaurs")
+    # spread_resources(is_world_starship_yard, is_world_not_in_nebula, minotaur_id)

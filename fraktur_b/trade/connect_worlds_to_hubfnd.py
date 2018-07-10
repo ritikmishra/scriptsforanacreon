@@ -5,6 +5,8 @@ from anacreonlib import Anacreon
 import creds
 
 # TL_10_WORLD_CLASS_IDS = [203]
+from anacreonlib.exceptions import HexArcException
+
 TL8_WORLD_CLASS_IDS = [268, 183, 259]
 TL9_DESIGNATION_IDS = []
 TL8_DESIGNATION_IDS = [71,]
@@ -33,11 +35,17 @@ if __name__ == '__main__':
     api.get_game_info()
     api.get_objects()
 
-    hubID = 90
-    fndID = 1415
+    # hubID = 90
+    # fndID = 1415
 
-    hub = api.get_obj_by_id(hubID)
-    fnd = api.get_obj_by_id(fndID)
+    # hub = api.get_obj_by_id(hubID)
+    # fnd = api.get_obj_by_id(fndID)
+
+    hub = api.get_obj_by_name("Zuben Eschamali 6")
+    fnd = api.get_obj_by_name("UX 8108")
+
+    hubID = hub["id"]
+    fndID = fnd["id"]
 
     orders = []
 
@@ -49,10 +57,10 @@ if __name__ == '__main__':
 
                     if 0 < api.dist(world['pos'], fnd['pos']) < 200 and fndID not in partner_ids:
                         tech_level = 7
-                        if world["designation"] in TL9_DESIGNATION_IDS:
-                            tech_level = 9
-                        elif world[u'worldClass'] in TL8_WORLD_CLASS_IDS or world["designation"] in TL8_DESIGNATION_IDS:
-                            tech_level = 8
+                        # if world["designation"] in TL9_DESIGNATION_IDS:
+                        #     tech_level = 9
+                        # elif world[u'worldClass'] in TL8_WORLD_CLASS_IDS
+                        #     tech_level = 8
 
                         print("Would have made", world["name"], "go to tech level", tech_level)
                         orders.append(TechLevelOrder(world_id, tech_level))
@@ -90,13 +98,17 @@ if __name__ == '__main__':
                                 orders.append(ExportOrder(world_id, thing_id))
                                 # api.set_trade_route(hubID, world_id, "consumption", 100, thing_id)
 
-    for order in orders:
-        if type(order) is ImportOrder:
-            api.set_trade_route(order.planet_id, hubID, "addDefaultRoute")
-            print("Order: Import from hub, ID: ", order.planet_id)
-        elif type(order) is ExportOrder:
-            api.set_trade_route(hubID, order.planet_id, "consumption", 100, order.planetary_export)
-            print("Order: Export resource ID", order.planetary_export, "to hub, planet ID: ", order.planet_id)
-        elif type(orders) is TechLevelOrder:
-            print("Order: Import tech level", order.tech_level, "to planet ID: ", order.planet_id)
-            api.set_trade_route(order.planet_id, fndID, "tech", order.tech_level)
+    [api.set_trade_route(order.planet_id, fndID, "tech", order.tech_level) for order in orders if type(order) is TechLevelOrder]
+    # for order in orders:
+    #     try:
+    #         if type(order) is ImportOrder:
+    #             api.set_trade_route(order.planet_id, hubID, "addDefaultRoute")
+    #             print("Order: Import from hub, ID: ", order.planet_id)
+    #         elif type(order) is ExportOrder:
+    #             api.set_trade_route(hubID, order.planet_id, "consumption", 100, order.planetary_export)
+    #             print("Order: Export resource ID", order.planetary_export, "to hub, planet ID: ", order.planet_id)
+    #         elif type(orders) is TechLevelOrder:
+    #             print("Order: Import tech level", order.tech_level, "to planet ID: ", order.planet_id)
+    #             api.set_trade_route(order.planet_id, fndID, "tech", order.tech_level)
+    #     except HexArcException as e:
+    #         print("[ WARN ]: ", e)

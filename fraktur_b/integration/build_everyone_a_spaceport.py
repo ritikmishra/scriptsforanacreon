@@ -6,9 +6,7 @@ from anacreonlib import Anacreon
 import creds
 import time
 
-SPACEPORT_ID = 225
-STARPORT_ID = 234
-
+from fraktur_b.utils import find_thing
 
 def squash_traits(worldobj):
     ids = []
@@ -27,6 +25,9 @@ if __name__ == '__main__':
 
     api.get_game_info()
     api.get_objects()
+
+    SPACEPORT_ID = find_thing("core.spaceport", api)
+    STARPORT_ID = find_thing("core.starport", api)
 
     for world_id, world_obj in api.objects_dict.items():
         if world_obj["sovereignID"] == api.sovID:

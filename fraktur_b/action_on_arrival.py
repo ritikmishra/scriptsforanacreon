@@ -3,7 +3,7 @@ import multiprocessing
 import sys
 from copy import copy
 
-import daemon
+# import daemon
 
 from anacreonlib import Anacreon
 import creds
@@ -12,7 +12,7 @@ import time
 from fraktur_b.utils import make_notification_base
 
 FLEET_ID = 123
-FLEET_NAME = "get off my lawn"
+FLEET_NAME = "1145th Fleet"
 FIND_FLEET_BY_NAME = True
 MODE = "spaceSupremacy"
 

@@ -12,3 +12,12 @@ Many tasks within the game are tedious, such as building spaceports on newly con
 ## Usage
 
 I run these scripts from PyCharm. PyCharm does funny things to `PYTHONPATH`. As a result, if you are runnning these outside if PyCharm, you may need to manipulate your `PYTHONPATH`
+
+On a *nix system, as long as you are running from the root directory of the project, the `runscript` bash script will take care of `PYTHONPATH` manipulation for you. 
+
+
+### Usage of runscript
+
+`./runscript <path to file> <arguments>`
+
+It's like running with the `python` command, but you have `./runscript` there instead. 

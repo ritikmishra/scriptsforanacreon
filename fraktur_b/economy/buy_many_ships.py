@@ -4,8 +4,8 @@ from fraktur_b.utils import find_thing
 
 
 VENDOR_NAME = "UX 6582"
-SHIP_UNID = "core.gunshipHammerhead"
-QUANTITY = 1
+SHIP_UNID = "core.explorerVanguard"
+QUANTITY = 100000
 
 
 def buy_many_ships(api, vendor_name, ship_unid, quantity):

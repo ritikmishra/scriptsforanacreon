@@ -9,7 +9,6 @@ from fraktur_b.utils import find_thing, get_valid_improvement_list
 
 
 if __name__ == '__main__':
-    done_iterating = False
     ConstructionOrder = collections.namedtuple("ConstructionOrder", ["planet_id", "planet_name", "improvement_id", "improvement_name"])
 
     api = Anacreon(creds.USERNAME, creds.PASSWORD)
@@ -23,7 +22,7 @@ if __name__ == '__main__':
     limiting_semaphore = threading.BoundedSemaphore(6)
 
     def fill_construction_orders():
-        while not done_iterating or not construction_orders.empty():  # If there are more to be added or it is not empty
+        while not construction_orders.empty():  # If there are more to be added or it is not empty
             limiting_semaphore.acquire()
 
             try:
@@ -52,10 +51,10 @@ if __name__ == '__main__':
 
     print("Done iterating")
 
+
     print("Making threads")
     for _ in range(6):
         threading.Thread(target=fill_construction_orders).start()
 
     print("Created threads")
 
-    done_iterating = True

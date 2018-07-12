@@ -181,3 +181,27 @@ def get_valid_improvement_list(world, scninfo: Dict[int, Dict[str, Any]]):
             valid_improvement_ids.append(thing_id)
 
     return valid_improvement_ids
+
+
+def find_things_world_exports(world, scninfo, include_units=False):
+    things_world_exports = []
+    try:
+        primary_industry_id = scninfo[world[u'designation']]["primaryIndustry"]
+        for thing in world["traits"]:
+            if type(thing) is dict and thing["traitID"] == primary_industry_id:
+                try:
+                    for i, item_id in enumerate(thing["buildData"][::3]):
+                        alloc = thing["buildData"][i * 3 + 1]
+                        cannotBuild = thing["buildData"][i * 3 + 2]
+
+                        if cannotBuild is None and (include_units or "Unit" not in scninfo[item_id]["category"]):
+                            things_world_exports.append(item_id)
+                except KeyError as e:
+                    raise e
+
+    except KeyError:
+        pass
+
+    return things_world_exports
+
+

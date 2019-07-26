@@ -155,8 +155,10 @@ def _plan_resource_disribution(worlds, is_world_producer, is_world_consumer, thi
 
 # enforce resource distribution
 def _apply_resource_distribution(resource_dist: ResourceDistribution):
+    print(resource_dist.units_per_consumer * len(resource_dist.consumers), "things being consumed total")
     print("Distributing", resource_dist.units_per_consumer, "things per planet")
     print("There are", len(resource_dist.consumers), "planets")
+    input("Press enter . . .")
 
     for consumer_id in resource_dist.consumers:
         thing_required = resource_dist.units_per_consumer

@@ -12,7 +12,7 @@ import time
 from fraktur_b.utils import make_notification_base
 
 FLEET_ID = 123
-FLEET_NAME = "1145th Fleet"
+FLEET_NAME = "lawn treaders"
 FIND_FLEET_BY_NAME = True
 MODE = "spaceSupremacy"
 
@@ -45,9 +45,28 @@ def main():
     make_notification_base("Attacking that world!", "Fleet name " + FLEET_NAME + " is attacking the world")
 
     ### ACTION ###
-    api.attack(fleet_obj["anchorObjID"], MODE)
+    world_id = fleet_obj["anchorObjID"]
+    api.attack(world_id, MODE)
     # api.disband_fleet(fleet_obj["id"], fleet_obj["anchorObjID"])
 
+    # wait for attack to be over
+    tactical = api.get_tactical(world_id)
+
+    while len([x for x in tactical if x["class"] == "battlePlan"]) > 0:
+        print("[", world_id, "]", "Waiting 5 secs")
+        time.sleep(5)
+        tactical = api.get_tactical(world_id)
+
+    daleras_world_id = 3739
+    api.set_fleet_destination(fleet_obj["id"], daleras_world_id)
+
+    print("Waiting for arrival at Daleras")
+    time.sleep(api.get_fleet_eta(fleet_obj) + 10)
+
+    fleet_obj = api.get_obj_by_id(fleet_obj["id"], True)
+
+    print("Selling")
+    api.sell_fleet(fleet_obj["id"], daleras_world_id, fleet_obj["resources"])
 if __name__ == '__main__':
     # with daemon.DaemonContext():
     main()

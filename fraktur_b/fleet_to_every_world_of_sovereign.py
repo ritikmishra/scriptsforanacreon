@@ -22,7 +22,7 @@ api.get_objects()
 
 EXPLORER_ID = find_thing("core.explorerHelion", api)
 SOURCE_OBJ_ID = 3023
-ENEMY_SOV_ID = 172512
+ENEMY_SOV_ID = 136804
 
 World = collections.namedtuple("World", ["name", "id"])
 

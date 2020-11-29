@@ -1,4 +1,6 @@
-# anacreonlib
+# scriptsforanacreon
+
+**This script collection uses anacreonlib 1.0 and is deprecated**
 
 This library contains Python scripts which automate various tasks in [Anacreon 3](https://anacreon.kronosaur.com), which is an online [4X](https://en.wikipedia.org/wiki/4X) game produced by [Kronosaur Productions, LLC.](http://kronosaur.com/)
 
